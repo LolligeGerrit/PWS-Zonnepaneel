@@ -164,11 +164,11 @@ for x in range(365):
 '''
 
 #Krijg een enkele waarde op een moment
-
+'''
 sunLoc = getSunLocation(lat, long, getAccurateTimezone(long), date, time, daylightSavingTime, True)   
 
 vd(sunLoc)
-
+'''
 
 
 #voor elke minuut in de dag (24 uur vanaf de tijd), pak een variable om te plotten.
@@ -201,19 +201,6 @@ plt.ylabel(valueToGet + " waardes")
 plt.title(valueToGet)
 plt.show()
 '''
-
-
-
-'''
-fig, axs = plt.subplots(2)
-fig.suptitle(str(date.time()))
-axs[0].set_title("Originele waardes")
-axs[1].set_title("Genormalizeerde waardes",pad=-20)
-axs[0].plot(xpoints, ypoints)
-axs[1].plot(xpoints, valuesNormalized)
-plt.show()
-'''
-
 
 
 
