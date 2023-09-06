@@ -164,11 +164,11 @@ for x in range(365):
 '''
 
 #Krijg een enkele waarde op een moment
-'''
+
 sunLoc = getSunLocation(lat, long, getAccurateTimezone(long), date, time, daylightSavingTime, True)   
 
 vd(sunLoc)
-'''
+
 
 
 #voor elke minuut in de dag (24 uur vanaf de tijd), pak een variable om te plotten.
