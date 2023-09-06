@@ -235,7 +235,4 @@ daylight savings time is active in The Netherlands between:
 Mar 26, 2023
 Oct 29, 2023
 
-less changes
-even more changes
-
 '''
