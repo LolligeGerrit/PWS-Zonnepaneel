@@ -3,5 +3,3 @@
 
 <br/><br/>
 In deze repository staat alle code van ons PWS over een meedraaiend zonnepaneel.
-
-*Dit is een test*
