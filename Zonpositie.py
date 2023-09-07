@@ -161,17 +161,12 @@ for x in range(365):
     daylightSavingTime = checkDaylightSavingTime(date)
 '''
 
-<<<<<<< HEAD
-#Krijg een enkele waarde op een moment
-
-=======
 #Krijg een enkele waarde op een moment.
 '''
->>>>>>> 9abae299bbf784fb9d166f6a952b126135817952
 sunLoc = getSunLocation(lat, long, getAccurateTimezone(long), date, time, daylightSavingTime, True)   
 
 vd(sunLoc)
-
+'''
 
 
 #Voor elke minuut in de dag (24 uur vanaf de tijd), pak een variable om te plotten.
