@@ -44,8 +44,8 @@ def getAccurateTimezone(long: float): #DEZE MAG WEG
 
 
 #deze functie berekent de localSolarTime en retuerned deze. Dit is een Float tussen -180 en 180.
-def getLocalSolarTime(long: float, utcDiffrence: float | int, date: datetime.datetime, dayOfTheYear:int):
-    greenwhichTime = date - datetime.timedelta(hours=utcDiffrence)
+def getLocalSolarTime(long: float, utcDifference: float | int, date: datetime.datetime, dayOfTheYear:int):
+    greenwhichTime = date - datetime.timedelta(hours=utcDifference)
     correction = long * 4
     
     B = 360/365 * (dayOfTheYear - 81)
@@ -61,11 +61,11 @@ def getLocalSolarTime(long: float, utcDiffrence: float | int, date: datetime.dat
 
 
 #Functie die een dictionary returned met daarin de elevationAngle en de azimuth. Als de includeInfo boolean True is zit er ook date, dayOfTheYear, declinationAngle, localSolarTime en localHourAngle in.
-def getSunLocation(lat: float, long :float, utcDiffrence: float | int, date: datetime.datetime, time: list, daylightSavingTime: bool, includeInfo: bool = False):
+def getSunLocation(lat: float, long :float, utcDifference: float | int, date: datetime.datetime, time: list, daylightSavingTime: bool, includeInfo: bool = False):
     
     dayOfTheYear = date.timetuple().tm_yday
     declinationAngle = getDeclinantionAngle(date)
-    localSolarTime = getLocalSolarTime(long, utcDiffrence, date, dayOfTheYear)
+    localSolarTime = getLocalSolarTime(long, utcDifference, date, dayOfTheYear)
     localHourAngle = 15/60 * (localSolarTime - 12*60)
     elevationAngle = m.degrees(m.asin(m.sin(m.radians(declinationAngle)) * m.sin(m.radians(lat)) + m.cos(m.radians(declinationAngle)) * m.cos(m.radians(lat)) * m.cos(m.radians(localHourAngle))))
 
@@ -114,7 +114,7 @@ lat = 52.23629
 long = 5.21295
 
     #Timezones
-utcDiffrence = 1 #De tijdzone, dit is ZONDER de dst, deze berekenen we later.
+utcDifference = 1 #De tijdzone, dit is ZONDER de dst, deze berekenen we later.
 pytzTimezone = "Europe/Amsterdam" #Je huidige tijdzone, zie https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568.
 
     #Date & Time
@@ -136,7 +136,7 @@ if daylightSavingTime:
 '''
 for x in range(12):
     print("##### {0} #####".format(date))
-    sunLoc = getSunLocation(lat, long, utcDiffrence, date, time, daylightSavingTime, True)
+    sunLoc = getSunLocation(lat, long, utcDDifference, date, time, daylightSavingTime, True)
     vd(sunLoc)
     try:
         date = date.replace(month=date.month + 1)
@@ -150,7 +150,7 @@ for x in range(12):
 for x in range(365):
     
     try:
-        sunLoc = getSunLocation(lat, long, utcDiffrence, date, time, daylightSavingTime, True)
+        sunLoc = getSunLocation(lat, long, utcDifference, date, time, daylightSavingTime, True)
         print(sunLoc["azimuth"])
         print("success")
     except:
@@ -184,7 +184,7 @@ valueToGet = "localSolarTime" #PAS DIT AAN ALS JE IETS ANDERS WIL PLOTTEN
 
 for x in range(1440):
     try:    
-        sunLoc = getSunLocation(lat, long, utcDiffrence, date, time, daylightSavingTime, True)
+        sunLoc = getSunLocation(lat, long, utcDifference, date, time, daylightSavingTime, True)
         dayValues.append(sunLoc[valueToGet])
         
     except:
@@ -223,10 +223,10 @@ valuesNormalized = 2 * ((valuesNp - min(valuesNp)) / (max(valuesNp) - min(values
 
 #De oude getLocalSolarTime functie (hoeven we niet meer te gebruiken)
 '''
-def getLocalSolarTime(long: float, dayOfTheYear: int, utcDiffrence: float | int, date: datetime.datetime):
+def getLocalSolarTime(long: float, dayOfTheYear: int, utcDifference: float | int, date: datetime.datetime):
     B = 360/365 * (dayOfTheYear - 81)
     equationOfTime = 9.87 * m.sin(m.radians(2 * B)) - 7.53 * m.cos(m.radians(B)) - 1.5 * m.sin(m.radians(B))
-    localStandardTimeMeridian = 15 * utcDiffrence
+    localStandardTimeMeridian = 15 * utcDifference
     timeCorrectionFactor = 4 * (long - localStandardTimeMeridian) + equationOfTime
     localSolarTime = (date.hour*60 + date.minute) + (timeCorrectionFactor/60)
     vd(localSolarTime)
