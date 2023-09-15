@@ -89,16 +89,31 @@ def getSunLoc(date :datetime.datetime, lat : float, long : float, timezone :int,
         sunsetTime=solarNoon+haSunrise*4/1440
         sunlightDuration=8*haSunrise
         
-        returnDict.update({"sunriseTime" : sunriseTime, "sunsetTime" : sunsetTime, "sunlightDuration" : sunlightDuration})
+        returnDict.update({"sunriseTime" : sunriseTime, "sunsetTime" : sunsetTime, "sunlightDuration" : sunlightDuration, "solarNoon":solarNoon})
     
     returnDict.update({'elevationAngle' : correctedSolarElevation, 'azimuthAngle' : correctedSolarAzimuthAngle})
     
     return returnDict
 
 
+def getSeasonAngle(date, lat, long, timezone):
+    date = date.replace(hour=12, minute=0, second=0)
+    data = getSunLoc(date, lat, long, timezone, True)
+    solarNoon = data['solarNoon']
+
+    date = date.replace(hour=0, minute=0, second=0)
+    date += datetime.timedelta(minutes=solarNoon*1440)
+    seasonAngle = getSunLoc(date, lat, long, timezone, False)
+    return seasonAngle['elevationAngle']
+    
+
+    
+
+
+
 
 ##// Input \\##
-date = datetime.datetime(year=2023, month= 9 , day= 11, hour=8, minute=30)
+date = datetime.datetime(year=2023, month=9, day= 11, hour=16, minute=30)
 
 lat = 52.19355
 long = 5.28939
@@ -109,7 +124,7 @@ timezone = 2
 sunLoc = getSunLoc(date, lat, long, timezone, True)
 vd(sunLoc)
 
-
+print(getSeasonAngle(date, lat, long, timezone))
 
 #Matplotlib plot
 '''
