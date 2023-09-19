@@ -105,15 +105,10 @@ def getSeasonAngle(date, lat, long, timezone):
     date += datetime.timedelta(minutes=solarNoon*1440)
     seasonAngle = getSunLoc(date, lat, long, timezone, False)
     return seasonAngle['elevationAngle']
-    
-
-    
-
-
 
 
 ##// Input \\##
-date = datetime.datetime(year=2023, month=9, day= 11, hour=16, minute=30)
+date = datetime.datetime(year=2023, month=1, day= 1, hour=12, minute=0)
 
 lat = 52.19355
 long = 5.28939
@@ -121,26 +116,43 @@ timezone = 2
 
 ##// End of input \\##
 
+
 sunLoc = getSunLoc(date, lat, long, timezone, True)
 vd(sunLoc)
 
 print(getSeasonAngle(date, lat, long, timezone))
 
-#Matplotlib plot
-'''
-amountOfDays = 3
-dayValues = []
-dayValues2 = []
-npValues = np.arange(0, 1440 * amountOfDays, 1)
 
-for x in range(1440 * amountOfDays):
+#Matplotlib plot
+amountOfDays = 3
+dayElevation = []
+dayAzimuth = []
+daySeasonAngle = []
+npValues = np.arange(0, 24 * amountOfDays, 1)
+
+
+#fill dayElevation and dayAzimuth with data
+for x in range(24* amountOfDays):
     sunLoc = getSunLoc(date, lat, long, timezone, False)
-    date += datetime.timedelta(minutes=1)
-    dayValues.append(sunLoc['elevationAngle'])
-    dayValues2.append(sunLoc['azimuthAngle'])
-    
-plt.plot(npValues, dayValues)
-plt.plot(npValues, dayValues2)
+    date += datetime.timedelta(hours=1)
+    dayElevation.append(sunLoc['elevationAngle'])
+    dayAzimuth.append(sunLoc['azimuthAngle'])
+    daySeasonAngle.append(getSeasonAngle(date, lat, long, timezone))
+
+
+fig, axs = plt.subplots(3)
+fig.suptitle('Azimuth and Elevation Angle')
+
+#plot data
+axs[0].plot(npValues, dayAzimuth, color='orange')
+axs[1].plot(npValues, dayElevation)
+axs[2].plot(npValues, daySeasonAngle, color='green')
+
+#set subplot titles
+axs[0].set_title('Azimuth Angle')
+axs[1].set_title('Elevation Angle')
+axs[2].set_title('Season Angle')
+
+fig.subplots_adjust(hspace=.5) #space between plots
 
 plt.show()
-'''
