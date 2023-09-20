@@ -16,7 +16,7 @@ def checkPathExistence(path):
 #this function creates a directory
 def makeDir(path):
     os.mkdir(path)
-    
+
 
 
 date = datetime.datetime.now()
@@ -30,29 +30,29 @@ print(pathExists)
 if pathExists == False:
     makeDir(filePath)
 
-testFile1 = open(filePath + "testFile.txt", "w")
-testFile2 = open(filePath + "testFile2.txt", "w")
+setup1 = open(filePath + "setup1.txt", "w")
+setup2 = open(filePath + "setup2.txt", "w")
+setup3 = open(filePath + "setup3.txt", "w")
+setup4 = open(filePath + "setup4.txt", "w")
 
+
+#this is only for testing purposes
 for x in range(1440):
-    testFile1.write(str(random.randint(200, 300)) + "\n")
-    testFile2.write(str(random.randint(200, 300)) + "\n")
+    date += datetime.timedelta(minutes=1)
+    setup1.write(str(str(date) + "," + str(random.randint(200, 300))) + "\n")
+    setup2.write(str(str(date) + "," + str(random.randint(200, 300))) + "\n")
+    setup3.write(str(str(date) + "," + str(random.randint(200, 300))) + "\n")
+    setup4.write(str(str(date) + "," + str(random.randint(200, 300))) + "\n")
+
+
+setup1.close()
+setup2.close()
+setup3.close()
+setup4.close()
 
 
 
 
-testFile1.close()
-testFile2.close()
-
-###--- Read the file ---###
-
-    
-    
-
-
-filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format(date.date())
-    
-filePathTest1 = filePath + "testFile.txt"
-readFile(filePathTest1, True)
         
 
 #run something indefinitely every second.
