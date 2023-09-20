@@ -1,7 +1,10 @@
 from matplotlib import pyplot as plt
+from matplotlib import ticker
 import numpy as np
 import datetime
+
 import os
+from var_dump import var_dump as vd
 
 
 #Function that reads a file, and plots it if 'plot' is true.
@@ -10,28 +13,30 @@ def readFile(path, plot: bool = False):
     file = open(path, "r")
     lines = file.readlines()
     
-    values = []
+    powerValues = []
+    timeValues = []
     
     #save all the lines in a list
     for line in lines:
-        values.append(float(line))
+        splitLine = line.split(",")
+        timeValues.append(datetime.datetime.strptime(splitLine[0], "%Y-%m-%d %H:%M:%S.%f"))
+        powerValues.append(float(splitLine[1]))
+        
+    
     
     #plot the graph if 'plot' is true
     if plot:
-        x = datetime.timedelta(days=1) / len(values)
-        start = datetime.datetime(2023, 1, 1, 0, 0, 0)
-
         
-        values2 = [start]
-        for i in range(len(values)-1):  #-1 because a list starts at 0, and a .txt file doesnt.
-            values2.append(values2[-1] + x)
-        
-        plt.plot(values2, values)
+        fix, ax = plt.subplots()
+        ax.plot(timeValues, powerValues)
         plt.xticks(rotation=30) #rotate the x labels 30 
+        ax.xaxis.set_major_locator(ticker.LinearLocator())
+        
+        
         plt.show()
     
 
-    return values
+    return {'timeValues': timeValues, 'powerValues': powerValues}
 
 
 #this function checks if a path exists
