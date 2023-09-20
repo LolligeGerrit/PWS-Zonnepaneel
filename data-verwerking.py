@@ -8,7 +8,7 @@ from var_dump import var_dump as vd
 
 
 #Function that reads a file, and plots it if 'plot' is true.
-def readFile(path, plot: bool = False):
+def readFile(path, plot: bool = False, startDate: datetime.datetime = datetime.datetime(1, 1, 1, 0, 0, 0), endDate: datetime.datetime = datetime.datetime.now()):
     #read the file
     file = open(path, "r")
     lines = file.readlines()
@@ -17,10 +17,13 @@ def readFile(path, plot: bool = False):
     timeValues = []
     
     #save all the lines in a list
+    
     for line in lines:
+        
         splitLine = line.split(",")
-        timeValues.append(datetime.datetime.strptime(splitLine[0], "%Y-%m-%d %H:%M:%S.%f"))
-        powerValues.append(float(splitLine[1]))
+        if startDate <= datetime.datetime.strptime(splitLine[0], "%Y-%m-%d %H:%M:%S.%f") <= endDate:
+            timeValues.append(datetime.datetime.strptime(splitLine[0], "%Y-%m-%d %H:%M:%S.%f"))
+            powerValues.append(float(splitLine[1]))
         
     
     
@@ -58,7 +61,7 @@ if checkPathExistence(str(date)):
 
     filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format(str(date))
     setup1 = filePath + "setup1.txt"
-    readFile(setup1, True)
+    readFile(setup1, True, endDate=datetime.datetime(2023, 9, 22, 23, 59, 59))
     
 else:
     print("Files not found, please run dataCollection.py first.")
