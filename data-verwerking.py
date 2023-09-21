@@ -41,6 +41,7 @@ def readFile(path, plot: bool = False, startDate: datetime.datetime = datetime.d
         xfmt = mdates.DateFormatter('%d-%m-%y %H:%M') #format the xaxis tickers to a nice day and time format
         ax.xaxis.set_major_formatter(xfmt) #apply the formatter from previous line
         plt.margins(x=0.01) #remove the whitespaces on the xaxis
+        
         ##--End of plot formatting--##
         
         plt.show()
@@ -59,8 +60,8 @@ def checkPathExistence(path):
 
 
 ###--- Read the file ---###
-#filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format(str(date)) #Fap's laptop
-filePath = r"D:\profy_progreumeur\Python\New folder\jemoeder\jemoeder\{0}\\".format("Data") #Fap's pc
+filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format("Data") #Fap's laptop
+#filePath = r"D:\profy_progreumeur\Python\New folder\jemoeder\jemoeder\{0}\\".format("Data") #Fap's pc
 
 if checkPathExistence(filePath):
     print("Files found for {0}, reading files now.")
