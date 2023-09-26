@@ -21,8 +21,7 @@ def makeDir(path):
 date = datetime.datetime.now()
 
 # the 'r' before the string is needed to make the string a raw string, so that the backslashes are not interpreted as escape characters
-filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format(
-    "Data")
+filePath = r"C:\Users\Fabian\Documents\Visual studio projects\Python\reusable project\reusableProject\reusableProject\{0}\\".format("Data")
 
 # filePath = r"D:\profy_progreumeur\Python\New folder\jemoeder\jemoeder\{0}\\".format("Data") #Fap's pc
 
