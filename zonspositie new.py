@@ -12,7 +12,7 @@ import datetime
 import julian
 from var_dump import var_dump as vd
 
-#Nessacary for plotting
+#Necessary for plotting
 import numpy as np
 from matplotlib import pyplot as plt
 
