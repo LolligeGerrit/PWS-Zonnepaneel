@@ -40,6 +40,18 @@ def read_file(path,
     power_values = {}
     voltage_values = {}
     current_values = {}
+    yield_values = {}
+
+    difference_values = []
+    difference_temp = []
+
+    label_dict = {
+        "w": {"label": "Vermogen (W)", "unit": "W"},
+        "v": {"label": "Spanning (V)", "unit": "V"},
+        "a": {"label": "Stroom (A)", "unit": "A"},
+        "y": {"label": "Opbrengst (Wh)", "unit": "Wh"}
+    }
+
 
     # Read the file
     file = open(path, "r")
@@ -47,21 +59,22 @@ def read_file(path,
     line_number = 0
     error_lines = []
 
-    difference_values = []
-    difference_temp = []
-
     # Make variable layout
     for i in setup:
         if plot_type == "all":
             power_values[f"setup_{i}"] = []
             voltage_values[f"setup_{i}"] = []
             current_values[f"setup_{i}"] = []
+            yield_values[f"setup_{i}"] = [0]
 
-        power_values[f"setup_{i}"] = []
+        if plot_type == "y":
+            power_values[f"setup_{i}"] = [0]
+        else:
+            power_values[f"setup_{i}"] = []
 
     # Make sure difference_toggle isn't true when there less or more than 2 setups selected
     if difference_toggle:
-        if len(setup) != 2:
+        if len(setup) != 2 or plot_type == "all":
             print("INFO | difference_toggle was set to false because there are more than 2 setup's selected.")
             difference_toggle = False
 
@@ -76,6 +89,7 @@ def read_file(path,
             continue
 
         try:
+
             # This is statement checks if the datapoint being checked is within the given time range
             if start_date <= datetime.datetime.strptime(split_line[0], "%Y-%m-%d %H:%M:%S.%f") <= end_date:
                 # This if statement checks for "\n" at the end of the line, and removes it
@@ -95,17 +109,44 @@ def read_file(path,
                             power_values[f"setup_{i}"].append(float(values[0]) * float(values[1]))
                             voltage_values[f"setup_{i}"].append(float(values[0]))
                             current_values[f"setup_{i}"].append(float(values[1]))
+
+                            if time_values[-1].hour == 0 and time_values[-1].minute in [0, 1]:
+                                yield_values[f"setup_{i}"].append(0 + ((float(values[0]) * float(values[1])) * 2*60 / 3600))
+
+                            else:
+                                yield_values[f"setup_{i}"].append(yield_values[f"setup_{i}"][-1] + ((float(values[0]) * float(values[1])) * 2*60 / 3600))
+
                         elif plot_type == "w":
                             power_values[f"setup_{i}"].append(float(values[0]) * float(values[1]))
+                            if difference_toggle:
+                                difference_temp.append(float(values[0]) * float(values[1]))
+
                         elif plot_type == "v":
                             power_values[f"setup_{i}"].append(float(values[0]))
+                            if difference_toggle:
+                                difference_temp.append(float(values[0]))
+
                         elif plot_type == "a":
                             power_values[f"setup_{i}"].append(float(values[1]))
+                            if difference_toggle:
+                                difference_temp.append(float(values[1]))
 
-                        if difference_toggle:
-                            difference_temp.append(float(values[0]) * float(values[1]))
-                    except:
-                        print(f"ERROR | Error whilst getting the power value from line {line_number}")
+                        elif plot_type == "y":
+                            if time_values[-1].hour == 0 and time_values[-1].minute in [0, 1]:
+                                power_values[f"setup_{i}"].append(0 + ((float(values[0]) * float(values[1])) * 2 * 60 / 3600))
+                                if difference_toggle:
+                                    difference_temp.append(0 + ((float(values[0]) * float(values[1])) * 2 * 60 / 3600))
+
+                            else:
+                                power_values[f"setup_{i}"].append(power_values[f"setup_{i}"][-1] + ((float(values[0]) * float(values[1])) * 2 * 60 / 3600))
+                                if difference_toggle:
+                                    difference_temp.append(power_values[f"setup_{i}"][-1] + ((float(values[0]) * float(values[1])) * 2 * 60 / 3600))
+
+
+
+
+                    except Exception as e:
+                        print(f"ERROR | Error whilst getting the value from line {line_number} - {e}")
                         error_lines.append(line_number)
                         continue
 
@@ -113,23 +154,27 @@ def read_file(path,
                     difference_values.append(abs(difference_temp[0] - difference_temp[1]))
                     difference_temp = []
 
-
-
-        except:
-            print(f"ERROR | Error whilst getting time from line {line_number}.")
+        except Exception as e:
+            print(f"ERROR | Error whilst getting time from line {line_number} - {e}")
             error_lines.append(line_number)
             continue
         else:
             continue
 
+    # Remove the first value from the yield_values list
+    if plot_type in ["y", "all"]:
+        for i in setup:
+            if plot_type == "all":
+                yield_values[f"setup_{i}"].pop(0)
+            if plot_type == "y":
+                power_values[f"setup_{i}"].pop(0)
 
     # Print error and other info
     print("INFO | Done reading file.")
     if len(error_lines) > 0:
         print(f"ERROR | Errors found on line(s) {error_lines}")
-        if plot is True:
-            print("ERROR | Because of errors found plotting is disabled.")
-            plot = False
+        exit("INFO | Errors found, exiting program.")
+
     else:
         print("INFO | No errors found!")
         print(f"INFO | {len(power_values[f'setup_{setup[0]}'])} lines processed.")
@@ -142,16 +187,17 @@ def read_file(path,
         for setup_power in power_values[f"setup_{i}"]:
             total[f"setup_{i}"] += (setup_power * 2*60) / 3600
     for i in total:
-        print(f" {i} | {round(total[i], 2)} Wh")
+        if int(i[-1]) in setup:
+            print(f" {i} | {round(total[i], 2)} Wh")
 
     # Plot the graph if 'plot' is true
     if plot:
         lines = []
 
         if plot_type == "all":
-            fig, ax = plt.subplots(3)
+            fig, ax = plt.subplots(4)
             plot_count = 0
-            for x in ["power_values", "voltage_values", "current_values"]:
+            for x in ["power_values", "voltage_values", "current_values", "yield_values"]:
 
                 if x == "power_values":
                     values = power_values
@@ -159,7 +205,8 @@ def read_file(path,
                     values = voltage_values
                 elif x == "current_values":
                     values = current_values
-
+                elif x == "yield_values":
+                    values = yield_values
                 for i in setup:
                     ax[plot_count].plot(time_values, values[f"setup_{i}"], label=f"Setup {i}")
                     ax[plot_count].set_title(x)
@@ -199,7 +246,7 @@ def read_file(path,
 
             plt.title("PWS draaiende zonnepanelen")
             plt.xlabel("Tijd")
-            plt.ylabel("Vermogen (W)")
+            plt.ylabel(label_dict[plot_type]["label"])
 
             # Rotate the tickers and make sure the placement is correct.
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=30, ha="right")
@@ -246,7 +293,7 @@ def read_file(path,
             fig.canvas.mpl_connect('pick_event', on_pick)
 
             # Works even if the legend is draggable. This is independent from picking legend lines.
-            leg.set_draggable(False)
+            leg.set_draggable(True)
 
             ##-- End of create legend --##
 
@@ -255,7 +302,7 @@ def read_file(path,
             def annot_max(x, y, ax=None):
                 xmax = x[np.argmax(y)]
                 ymax = max(y)
-                text = f"{round(ymax, 2)} W"
+                text = f"{round(ymax, 2)} {label_dict[plot_type]['unit']}"
                 if not ax:
                     ax = plt.gca()
                 arrowprops = dict(arrowstyle="->", alpha=0.5)
@@ -273,14 +320,21 @@ def read_file(path,
 
 ###--- Read the file ---###
 # the file_path variable should be the path to the data file
-file_path = r"./pws_data_7_dec.txt"
+file_path = r"./pws_data_7_dec_lc.txt"
 
 # calls the read_file function
+# plot_type can be the following:
+#   w - plot the power values
+#   v - plot the voltage values
+#   a - plot the current values
+#   y - plot the yield values
+#   all - plot all of the above
+
 read_file(file_path,
           plot=True,
           annotate_max=False,
           difference_toggle=True,
-          setup=[1, 2, 3, 4],
+          setup=[1, 4],
           plot_type="all",
           # start_date=datetime.datetime(2023, 12, 7, 0, 0, 0),
           # end_date=datetime.datetime(2023, 12, 7, 23, 59, 59)
