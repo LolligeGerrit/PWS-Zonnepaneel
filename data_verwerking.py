@@ -25,6 +25,7 @@ def read_file(path,
               difference_toggle: bool = False,
               annotate_max: bool = False,
               plot_type: str = "w",
+              plot_title: str = "PWS draaiende zonnepanelen",
               start_date: datetime.datetime = datetime.datetime(1, 1, 1, 0, 0, 0),
               end_date: datetime.datetime = datetime.datetime.now()
               ):
@@ -48,7 +49,7 @@ def read_file(path,
     label_dict = {
         "w": {"label": "Vermogen (W)", "unit": "W"},
         "v": {"label": "Spanning (V)", "unit": "V"},
-        "a": {"label": "Stroom (A)", "unit": "A"},
+        "a": {"label": "Stroomsterkte (A)", "unit": "A"},
         "y": {"label": "Opbrengst (Wh)", "unit": "Wh"}
     }
 
@@ -226,25 +227,25 @@ def read_file(path,
             fig, ax = plt.subplots()
 
             if 1 in setup:
-                (setup_1,) = ax.plot(time_values, power_values["setup_1"], label=f"Setup 1 (fabriekshoek)")
+                (setup_1,) = ax.plot(time_values, power_values["setup_1"], label=f"Opstelling 1")
                 lines.append(setup_1)
             if 2 in setup:
-                (setup_2,) = ax.plot(time_values, power_values["setup_2"], label=f"Setup 2 (seizoenshoek)")
+                (setup_2,) = ax.plot(time_values, power_values["setup_2"], label=f"Opstelling 2")
                 lines.append(setup_2)
             if 3 in setup:
-                (setup_3,) = ax.plot(time_values, power_values["setup_3"], label=f"Setup 3 (draaien + fabriekshoek)")
+                (setup_3,) = ax.plot(time_values, power_values["setup_3"], label=f"Opstelling 3")
                 lines.append(setup_3)
             if 4 in setup:
-                (setup_4,) = ax.plot(time_values, power_values["setup_4"], label=f"Setup 4 (draaien + seizoenshoek)")
+                (setup_4,) = ax.plot(time_values, power_values["setup_4"], label=f"Opstelling 4")
                 lines.append(setup_4)
 
             if difference_toggle:
-                (difference,) = ax.plot(time_values, difference_values, label=f"Difference")
+                (difference,) = ax.plot(time_values, difference_values, label=f"Verschil")
                 lines.append(difference)
 
             ##--Plot formatting--##
 
-            plt.title("PWS draaiende zonnepanelen")
+            plt.title(plot_title)
             plt.xlabel("Tijd")
             plt.ylabel(label_dict[plot_type]["label"])
 
@@ -320,22 +321,25 @@ def read_file(path,
 
 ###--- Read the file ---###
 # the file_path variable should be the path to the data file
-file_path = r"./pws_data_7_dec_lc.txt"
+file_path = r"./pws_data_15_dec_lc.txt"
 
 # calls the read_file function
 # plot_type can be the following:
-#   w - plot the power values
-#   v - plot the voltage values
-#   a - plot the current values
-#   y - plot the yield values
+#   w   - plot the power values
+#   v   - plot the voltage values
+#   a   - plot the current values
+#   y   - plot the yield values
 #   all - plot all of the above
+
+# All variables are optional, and have a default value
 
 read_file(file_path,
           plot=True,
           annotate_max=False,
           difference_toggle=True,
-          setup=[1, 4],
+          setup=[1, 2, 3, 4],
           plot_type="all",
-          # start_date=datetime.datetime(2023, 12, 7, 0, 0, 0),
-          # end_date=datetime.datetime(2023, 12, 7, 23, 59, 59)
+          plot_title="Plot title",
+          start_date=datetime.datetime(2023, 12, 3, 8, 0, 0),
+          end_date=datetime.datetime(2023, 12, 3, 17, 0, 0)
           )
