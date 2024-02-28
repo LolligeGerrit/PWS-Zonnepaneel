@@ -1,5 +1,5 @@
 # PWS-Zonnepaneel
-*Een profielwerkstuk van 4 VWO leerlingen op het Griftland College.*
+*Een profielwerkstuk van 4 6VWO leerlingen op het Griftland College.*
 ***
 
 In deze repository staat alle code die gebruikt is bij ons pws over draaiende zonnepanelen. De code runt op een Raspberry Pi 4b (2gb), en moet ervoor zorgen dat de opbrengst van 4 zonnepanelen wordt bijgehouden, hiervoor worden stroom- en spanningsmeters gebruikt. Ook worden, door middel 3 relais, twee motoren aangestuurd die elk een zonnepaneel laten draaien.
