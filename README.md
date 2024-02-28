@@ -38,11 +38,9 @@ Een bestand waarmee de motor wordt aangestuurd.
 Een bestand wat de totale opbrengst van de dag berekend, en deze naar de gebruikter stuurd.
 - [`send_daily_recap()`](https://github.com/LolligeGerrit/PWS-Zonnepaneel/blob/bdd85e04ab0c849ad3ada186bf3aaa13d022998c/daily_recap.py#L9) - Bereken de totale opbrengst en het maximale vermogen (alle opstellingen samen) van de dag, en stuur deze naar de gebruiker. Omdat dit bericht steeds rond `21:00` wordt verstuurd, wordt het ook gebruikt als indicatie dat de opstelling nog goed functioneerd.
 
-### [tca9548a.py](https://github.com/IRNAS/tca9548a-python) <br>
+### [tca9548a.py](https://github.com/IRNAS/tca9548a-python) 
+Een bestand waarmee de multiplexer wordt aangestuurd. Dit bestand is een package, zie [Gebruikte packages](https://github.com/LolligeGerrit/PWS-Zonnepaneel/edit/main/README.md#gebruikte-packages)
 
-Een bestand waarmee de multiplexer wordt aangestuurd.
-
-***
 
 ## Gebruikte packages
 - datetime
@@ -54,6 +52,7 @@ Een bestand waarmee de multiplexer wordt aangestuurd.
 - [ina260](https://github.com/jveitchmichaelis/ina260)
 - [Adafruit_CircuitPython_ADS1x15](https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15)
 - [matplotlib](https://github.com/matplotlib/matplotlib)
+- [tca9548a.py](https://github.com/IRNAS/tca9548a-python)
 
 ***
 
